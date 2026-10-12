@@ -67,6 +67,48 @@ Once running, open your browser to **`http://localhost:8080`** to access the int
 
 ---
 
+## Run with Podman
+
+> **Prerequisite:** [Podman](https://podman.io/getting-started/installation) installed and the Podman machine running (`podman machine start`).
+
+**1. Build the image**
+
+```bash
+podman build -t store-rest .
+```
+
+This runs a two-stage build inside the container:
+- Stage 1 downloads dependencies and compiles the source with Maven.
+- Stage 2 copies only the fat jar into a slim JRE image.
+
+**2. Run the container**
+
+```bash
+podman run --rm -p 8080:8080 store-rest
+```
+
+The flag `-p 8080:8080` maps port 8080 on your host to port 8080 inside the container.
+The service is available at **`http://localhost:8080`** once the Spring Boot banner appears.
+
+**3. Stop the container**
+
+Press `Ctrl+C` in the terminal, or find and stop it by name:
+
+```bash
+podman ps                        # find the container ID
+podman stop <container-id>
+```
+
+**4. Run in the background (detached)**
+
+```bash
+podman run -d --name store-rest -p 8080:8080 store-rest
+podman logs -f store-rest        # tail logs
+podman stop store-rest           # stop when done
+```
+
+---
+
 ## Interactive Web UI & API Explorer
 
 The service includes a built-in single-page web UI accessible at `http://localhost:8080/`:

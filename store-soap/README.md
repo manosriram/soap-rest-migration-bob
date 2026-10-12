@@ -82,6 +82,53 @@ curl http://localhost:8080/store?wsdl
 
 ---
 
+## Run with Podman
+
+> **Prerequisite:** [Podman](https://podman.io/getting-started/installation) installed and the Podman machine running (`podman machine start`).
+
+**1. Build the image**
+
+```bash
+podman build -t store-soap .
+```
+
+This runs a two-stage build inside the container:
+- Stage 1 downloads dependencies and compiles the source with Maven (targeting Java 8).
+- Stage 2 copies only the shaded fat jar into a slim JRE 8 image.
+
+**2. Run the container**
+
+```bash
+podman run --rm -p 8081:8080 store-soap
+```
+
+The flag `-p 8081:8080` maps port 8081 on your host to port 8080 inside the container.
+Once started, the endpoints are available at:
+
+| URL | Description |
+|-----|-------------|
+| `http://localhost:8081/store` | SOAP endpoint |
+| `http://localhost:8081/store?wsdl` | WSDL descriptor |
+
+**3. Stop the container**
+
+Press `Ctrl+C` in the terminal, or find and stop it by name:
+
+```bash
+podman ps                        # find the container ID
+podman stop <container-id>
+```
+
+**4. Run in the background (detached)**
+
+```bash
+podman run -d --name store-soap -p 8081:8080 store-soap
+podman logs -f store-soap        # tail logs
+podman stop store-soap           # stop when done
+```
+
+---
+
 ## Run the tests
 
 ```bash

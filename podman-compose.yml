@@ -1,0 +1,16 @@
+services:
+  store-rest:
+    build:
+      context: ./store-rest
+    image: store-rest:latest
+    container_name: store-rest
+    ports:
+      - "8080:8080"
+
+  store-soap:
+    build:
+      context: ./store-soap
+    image: store-soap:latest
+    container_name: store-soap
+    ports:
+      - "8081:8080"
